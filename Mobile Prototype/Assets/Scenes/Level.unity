@@ -276,12 +276,12 @@ SpriteRenderer:
   m_SortingLayerID: 964319395
   m_SortingLayer: -1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: b279ff51622e3e54c99bd3346b47152f, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Color: {r: 0.5283019, g: 0.5283019, b: 0.5283019, a: 1}
   m_FlipX: 0
   m_FlipY: 0
-  m_DrawMode: 2
-  m_Size: {x: 4, y: 4}
+  m_DrawMode: 0
+  m_Size: {x: 1.01, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -297,7 +297,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.4701, y: -0.0929, z: 1}
-  m_LocalScale: {x: 40, y: 40, z: 1}
+  m_LocalScale: {x: 67.30812, y: 31.39801, z: 2.9976}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -909,6 +909,8 @@ MonoBehaviour:
   spawnWidth: 20
   spawnHeight: 20
   lerpDuration: 3
+  spawnDistance: 10
+  shot: 0
   middleValue: {x: 451, y: 240}
   endValue: {x: 451, y: 600}
   timeText: {fileID: 574009511}
@@ -916,7 +918,6 @@ MonoBehaviour:
   circlePrefab: {fileID: 8458232828099747726, guid: 80860d92fc192924bbfe5032d1939350, type: 3}
   dartPrefab: {fileID: 128986652859210764, guid: 995e2f0a24dc04b49985c19e1307db38, type: 3}
   player: {fileID: 1586916749}
-  spawnDistance: 10
 --- !u!4 &672205919
 Transform:
   m_ObjectHideFlags: 0
@@ -1932,17 +1933,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff4805e5f706c054db9c741a236ca504, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  joystick: {fileID: 1307575718}
   speed: 5
   cannonDistance: 1
   recoilStrength: 30
   currentHealth: 0
   maxHealth: 100
   reloadTime: 1.5
+  canInstantiate: 1
+  joystick: {fileID: 1307575718}
   player: {fileID: 1586916749}
   bulletPrefab: {fileID: 5998453857597515491, guid: 5b10c17bc20b4b24d862b8d2783a9689, type: 3}
-  canInstantiate: 1
   slider: {fileID: 345008363}
+  gameManager: {fileID: 672205918}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

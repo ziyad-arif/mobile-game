@@ -6,17 +6,18 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    public FloatingJoystick joystick;
     public float speed;
     public float cannonDistance;
     public float recoilStrength;
     public float currentHealth;
     public float maxHealth;
     public float reloadTime;
+    public bool canInstantiate = true;
+    public FloatingJoystick joystick;
     public GameObject player;
     public GameObject bulletPrefab;
-    public bool canInstantiate = true;
     public Slider slider;
+    public ManageGame gameManager;
 
     private Rigidbody2D playerRb;
     
@@ -46,6 +47,7 @@ public class PlayerController : MonoBehaviour
             Instantiate(bulletPrefab, transform.position, bulletPrefab.transform.rotation);
             StartCoroutine(ShootDelay());
         }
+        gameManager.shot = true;
     }
 
     private IEnumerator ShootDelay()

@@ -10,6 +10,8 @@ public class ManageGame : MonoBehaviour
     private bool spawned = false;
     private float xPos;
     private float yPos;
+    private const float SLOWPOWER = 0.7f;
+    private const float FASTPOWER = 2.3f;
 
     public Dictionary<int, int> waveNumbers = new Dictionary<int, int> 
     {
@@ -23,9 +25,12 @@ public class ManageGame : MonoBehaviour
         {70, 5},
     };
     public int circleCount;
+    public static int level;
     public float spawnWidth;
     public float spawnHeight;
     public float lerpDuration;
+    public float spawnDistance;
+    public bool shot = false;
     public Vector2 middleValue;
     public Vector2 endValue;
     public TextMeshProUGUI timeText;
@@ -33,18 +38,29 @@ public class ManageGame : MonoBehaviour
     public GameObject circlePrefab;
     public GameObject dartPrefab;
     public GameObject player;
-    public float spawnDistance;
     // Start is called before the first frame update
     void Start()
     {
+        switch (level)
+        {
+            case 1:
+                Tutorial();
+                Debug.Log("ran");
+                break;
+        }
         StartCoroutine(GameTime());
-        SpawnCircles();
-        StartCoroutine(PopupText(0.7f, middleValue));      
+        SpawnCircles();    
     }
 
-    private IEnumerator PopupText(float power, Vector2 end)
+    private void Tutorial()
+    {
+        StartCoroutine(PopupText(SLOWPOWER, middleValue, "Tap and hold anywhere to use the joystick", 2));
+    }
+
+    private IEnumerator PopupText(float power, Vector2 end, string text, int eventNum)
     {
         float timeElapsed = 0;
+        popupText.text = text;
         Vector2 startValue = popupText.transform.position;
         while (timeElapsed < lerpDuration)
         {
@@ -55,10 +71,29 @@ public class ManageGame : MonoBehaviour
         }
         popupText.transform.position = end;
         yield return new WaitForSeconds(0.5f);
-        if (end == middleValue)
+        switch (eventNum)
         {
-            StartCoroutine(PopupText(2.3f, endValue));
+            case 1:
+                if (end == middleValue)
+                {
+                    StartCoroutine(PopupText(FASTPOWER, endValue, text, eventNum));
+                }
+                break;
+            case 2:
+                if (Input.touchCount > 0)
+                {
+                    StartCoroutine(PopupText(FASTPOWER, endValue, text, eventNum));
+                    StartCoroutine(PopupText(SLOWPOWER, middleValue, "Tap the shoot button to shoot a projectile", eventNum));
+                }
+                break;
+            case 3:
+                if (shot)
+                {
+                    StartCoroutine(PopupText(FASTPOWER, endValue, text, eventNum));
+                }
+                break;
         }
+       
     }
 
     // Update is called once per frame
