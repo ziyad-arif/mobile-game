@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class TargetPlayer : MonoBehaviour
 {
-    private PlayerController playerController;
     private GameObject player;
     private Rigidbody2D rb;
 
@@ -17,7 +16,6 @@ public class TargetPlayer : MonoBehaviour
     void Start()
     {
         player = GameObject.Find("Player");
-        playerController = GameObject.Find("Player").transform.Find("Cannon").GetComponent<PlayerController>();
         rb = GetComponent<Rigidbody2D>();
     }
 
@@ -37,8 +35,7 @@ public class TargetPlayer : MonoBehaviour
         }
         else if (gameObject.CompareTag("Square"))
         {
-
-        }
-        
+            Destroy(gameObject);
+        }       
     }
 }

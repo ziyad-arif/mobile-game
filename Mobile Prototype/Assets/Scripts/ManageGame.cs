@@ -3,17 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System.Linq;
+using Unity.VisualScripting;
 
 public class ManageGame : MonoBehaviour
 {
     private float secondsElapsed = 0;
-    private bool spawned = false;
     private float xPos;
     private float yPos;
     private const float SLOWPOWER = 0.7f;
     private const float FASTPOWER = 2.3f;
+    private Vector2 middleValue;
+    private Vector2 endValue;
+    private Vector2 initialTextPos;
+    private bool tutorialOver = false;
+    private bool spawned = false;
+    private bool popupAnimationEnded = false;
+    private string useJoystick = "Tap and hold anywhere to use the joystick";
+    private string pressShoot = "Tap the shoot button to shoot a projectile";
+    private string killEnemies = "Destroy the enemies, and be mindful of your weapon's recoil";
+    private List<Dictionary<int, int>> wavesList1 = new();
+    private Dictionary<int, int> selectedWave = new();
 
-    public Dictionary<int, int> waveNumbers = new Dictionary<int, int> 
+    public Dictionary<int, int> waves2 = new()
     {
         {1, 3},
         {10, 4},
@@ -25,36 +36,41 @@ public class ManageGame : MonoBehaviour
         {70, 5},
     };
     public int circleCount;
-    public static int level;
+    public static int level = 1;
     public float spawnWidth;
     public float spawnHeight;
     public float lerpDuration;
     public float spawnDistance;
+    public float textHeight;
     public bool shot = false;
-    public Vector2 middleValue;
-    public Vector2 endValue;
     public TextMeshProUGUI timeText;
     public TextMeshProUGUI popupText;
     public GameObject circlePrefab;
     public GameObject dartPrefab;
     public GameObject player;
+    public RectTransform canvasTransform;
     // Start is called before the first frame update
     void Start()
     {
+        wavesList1.Add(waves2);
+        foreach (var item in wavesList1)
+        {
+            if (item.ToString().Contains(level.ToString()))
+            {
+                selectedWave = item;
+            }
+        }
+        initialTextPos = popupText.transform.position;
+        middleValue = canvasTransform.position + new Vector3(0, canvasTransform.rect.height * textHeight);
+        endValue = new Vector2(canvasTransform.position.x, canvasTransform.position.y * 2.5f);
         switch (level)
         {
             case 1:
-                Tutorial();
-                Debug.Log("ran");
+                StartCoroutine(PopupText(SLOWPOWER, middleValue, useJoystick, 0));
                 break;
         }
         StartCoroutine(GameTime());
         SpawnCircles();    
-    }
-
-    private void Tutorial()
-    {
-        StartCoroutine(PopupText(SLOWPOWER, middleValue, "Tap and hold anywhere to use the joystick", 2));
     }
 
     private IEnumerator PopupText(float power, Vector2 end, string text, int eventNum)
@@ -71,6 +87,10 @@ public class ManageGame : MonoBehaviour
         }
         popupText.transform.position = end;
         yield return new WaitForSeconds(0.5f);
+        if (end == middleValue && !tutorialOver)
+        {
+            popupAnimationEnded = true;
+        }
         switch (eventNum)
         {
             case 1:
@@ -80,32 +100,45 @@ public class ManageGame : MonoBehaviour
                 }
                 break;
             case 2:
-                if (Input.touchCount > 0)
-                {
-                    StartCoroutine(PopupText(FASTPOWER, endValue, text, eventNum));
-                    StartCoroutine(PopupText(SLOWPOWER, middleValue, "Tap the shoot button to shoot a projectile", eventNum));
-                }
+                popupText.transform.position = initialTextPos;
+                StartCoroutine(PopupText(SLOWPOWER, middleValue, pressShoot, 0));
                 break;
             case 3:
-                if (shot)
-                {
-                    StartCoroutine(PopupText(FASTPOWER, endValue, text, eventNum));
-                }
+                popupText.transform.position = initialTextPos;
+                StartCoroutine(PopupText(SLOWPOWER, middleValue, killEnemies, 1));
                 break;
-        }
-       
+            default: break;
+        }     
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!spawned && waveNumbers.Count > 0)
+        // Tutorial
+        if (popupAnimationEnded)
         {
-            if (waveNumbers.ElementAt(0).Key == secondsElapsed)
+            if (Input.touchCount > 0)
             {
-                SpawnWave(waveNumbers.ElementAt(0).Value);
+                popupAnimationEnded = false;
+                StartCoroutine(PopupText(FASTPOWER, endValue, useJoystick, 2));
+            }
+            if (shot)
+            {
+                popupAnimationEnded = false;
+                tutorialOver = true;
+                StartCoroutine(PopupText(FASTPOWER, endValue, pressShoot, 3));
+                SpawnWave(1);
+            }          
+        }
+        
+
+        if (!spawned && selectedWave.Count > 0)
+        {
+            if (selectedWave.ElementAt(0).Key == secondsElapsed)
+            {
+                SpawnWave(selectedWave.ElementAt(0).Value);
                 spawned = true;
-                waveNumbers.Remove(waveNumbers.ElementAt(0).Key);
+                selectedWave.Remove(selectedWave.ElementAt(0).Key);
             }          
         }       
     }
