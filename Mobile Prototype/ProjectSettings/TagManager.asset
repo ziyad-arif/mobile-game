@@ -8,6 +8,8 @@ TagManager:
   - Circle
   - Bullet
   - Square
+  - Boundary
+  - Brute
   layers:
   - Default
   - TransparentFX
@@ -15,11 +17,11 @@ TagManager:
   - 
   - Water
   - UI
-  - Post Processing
   - 
-  - 
-  - 
-  - 
+  - Boundary
+  - Bullet
+  - Player
+  - XP
   - 
   - 
   - 

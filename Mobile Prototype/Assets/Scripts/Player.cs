@@ -7,18 +7,16 @@ public class Player : MonoBehaviour
     public GameObject cannon;
     public float circleDamage;
     public float triangleDamage;
+    public float boundaryDamage;
+    public ParticleSystem shatter;
 
     private PlayerController playerController;
+    private Rigidbody2D rb;
     // Start is called before the first frame update
     void Start()
     {
+        rb = GetComponent<Rigidbody2D>();   
         playerController = cannon.GetComponent<PlayerController>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -32,5 +30,18 @@ public class Player : MonoBehaviour
         {
             playerController.slider.value -= triangleDamage;
         }
+        else if (collision.gameObject.CompareTag("Boundary"))
+        {
+            playerController.slider.value -= boundaryDamage;
+            rb.AddForce((Vector2)transform.position - collision.GetContact(0).point, ForceMode2D.Impulse);
+        }
+    }
+
+    public void PlayShatter()
+    {
+        Debug.Log(shatter.isPlaying);
+        shatter.Stop();
+        shatter.Play();
+        Debug.Log(shatter.isPlaying);
     }
 }
